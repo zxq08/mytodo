@@ -1,17 +1,30 @@
 <template>
     <div class="page lists-show"><!-- 最外层容器 -->
       <nav><!-- 容器上半部分 -->
-        <div class="nav-group"><!-- 浏览器窗口小于40em时，显示移动端的菜单图标 -->
+        <div class="form list-edit-form" v-show="isUpdate">
+          <!-- 当用户点击标题进入修改状态，就显示当前内容可以修改 -->
+          <input type="text" v-model="todo.title" @keyup.enter="updateTitle" :disabled="todo.locked"/>
+          <div class="nav-group right">
+            <a class="nav-item" @click="isUpdate = false">
+              <span class="icon-close"></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-group" @click="$store.dispatch('updateMenu')" v-show="!isUpdate">
+        <!-- 浏览器窗口小于40em时，显示移动端的菜单图标 -->
+        <!-- 在菜单的图标下面添加updateMenu时，他可以直接调用vuex actions.js里面的updateMenu方法 -->
           <a class="nav-item">
             <span class="icon-list-unordered">
             </span>
           </a>
         </div>
-        <h1 class="title-page">
+
+        <h1 class="title-page" v-show="!isUpdate" @click="isUpdate = true">
           <span class="title-wrapper">{{todo.title}}</span><!-- 标题 -->
           <span class="count-list">{{todo.count || 0}}</span><!-- 数目 -->
         </h1>
-      <div class="nav-group right">
+      <div class="nav-group right" v-show="!isUpdate">
         <div class="options-web">
           <a class="nav-item"> <!-- 锁定图标 -->
             <span class="icon-lock" v-if="todo.locked"></span>
@@ -48,7 +61,8 @@
 <script>
     //引入组件
     import item from './item';
-    import { getTodo,addRecord} from "@/api/api";
+    import { getTodo,addRecord,editTodo} from "@/api/api";
+
 
     export default {
       data(){
@@ -59,7 +73,8 @@
             locked: false
           },
           items: [], //待办单项列表
-          text:''//新增待办单项绑定的值
+          text:'',//新增待办单项绑定的值
+          isUpdate: false
         }
       },
       //挂载组件
@@ -104,6 +119,18 @@
             this.init();
             //请求成功后初始化
           });
+        },
+        updateTodo(){
+          let _this = this;
+          editTodo({
+            todo:this.todo
+          }).then(data => {
+            _this.$store.dispatch('getTodo');
+          });
+        },
+        updateTitle(){
+          this.updateTodo();
+          this.isUpdate = false;
         }
       }
     }
