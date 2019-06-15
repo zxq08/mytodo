@@ -1,0 +1,133 @@
+/*
+  待办事项列表
+ */
+ api : /todo/list(get)
+ param : {}
+/**
+ * 左边的列表肯定是一个数组对象,考虑到我们每点击到这个标题，
+ * 就会跳转到详细，所以需要id来作为标识进行跳转，
+ * 再根据图上，标注好的标题，数字，锁定图标，得到下面的data结构
+ */
+ data : [
+ {
+  id : String, //单条待办唯一标识
+  title : String, //标题
+  count : Number, //未完成的待办项
+  locked : Boolean //锁定
+ },
+ {...},
+ ...
+ ];
+
+
+/*
+  新增待办事项
+ */
+ api : /todo/addTodo(post)
+ param : {}
+ data : {};
+
+
+/*
+ 单个待办事项查询
+ */
+ api : /todo/listId(get)
+ param : {id : String} //传入Id
+
+/**
+ * 返回指定id待办项的所有数据
+ */
+ data : {
+  id : String,
+  title : String,
+  count : Number,
+  isDelete : Boolean,
+  locked : Boolean,
+  record : [
+    text : String,
+    isDelete : Boolean,
+    checked : Boolean
+  ]
+ }
+
+
+/*
+ 修改待办事项标题，锁定、删除待办事项
+ */
+ api : todo/editTodo(post)
+/*
+ * 修改、删除、锁定都是操作单条数据，因此放在一接口
+ */
+ param : {
+  id : String,
+  title : String,
+  isDelete : Boolean,
+  locked : Boolean
+ }
+ data : {}
+
+
+/*
+ 新增待办单项
+ */
+ api : todo/addRecord(post)
+ param : {}
+ data : {}
+
+
+/*
+ 修改、删除、完成待办单项
+ */
+ api : todo/editRecord(post)
+ param : {
+   text : String,
+   isDelete : Boolean,
+   locked : Boolean
+  }
+  data : {}
+
+
+/*
+ 组件分析
+ */
+/*
+ *vue的组件一般分为四种
+ *（1）接入型 比如一个容器组件，里面包含了其他组件，本身只承担一个布局容器的作用
+ *（2）展示型 纯展示型的数据，不需要交互
+ *（3）交互型 加强版表单组件，强调复用性
+ *（4）功能型 比如<router-view>,<transition>，作为一种扩展、抽象机制的存在
+ */
+/*
+ *spa应用本身就是一个大组件
+ *里面的布局是一个组件，它包含了其他组件
+ *左边标签列是一个组件，包含列表、新增
+ *右边单个待办事项是一个组件，它包含上半部分和下半部分
+ *待办单项是一个组件，因为它需要被循环很多次
+ */
+ //最终我们得到：
+ app.vue     //最外层根组件，接入型
+ layouts.vue //布局组件，接入型
+ todos.vue   //左侧列表，交互型
+ lists.vue   //右侧内容，交互型
+ item.vue    //待办单项组件，交互型
+
+
+//目录结构如下
+├── build              // 构建服务和webpack配置
+├── config             // 项目不同环境的配置
+├── dist               // 项目build目录
+├── index.html         // 项目入口文件
+├── package.json       // 项目配置文件
+├── src                // 生产目录
+│   ├── assets         // 图片资源
+│   ├── common *          // 公共的css js 资源
+│   ├── components     // 各种组件
+│   ├── moke *           // 本地静态数据管理文件
+│   ├── App.vue         // 主页面
+│   ├── vuex *           // vuex状态管理器
+│   ├── router    // 路由配置器
+│   └── main.js        // Webpack 预编译入口
+
+
+
+
