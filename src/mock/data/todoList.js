@@ -5,7 +5,7 @@ for(let i=1;i<=Count.length;i++){
   Todos.push(Mock.mock({//根据数据模板生成随机数据
     id: Mock.Random.guid(),         //随机id
     title: Mock.Random.first(),     //随机标题
-    idDelete: false,                //是否删除
+    isDelete: false,                //是否删除
     locked: Mock.Random.boolean(),  //是否锁定
     record: Count.map(()=> {        //待办单项
       return {

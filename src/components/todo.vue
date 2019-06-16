@@ -1,5 +1,5 @@
 <template>
-    <div class="page lists-show"><!-- 最外层容器 -->
+    <div class="page lists-show" v-show="!todo.isDelete"><!-- 最外层容器 -->
       <nav><!-- 容器上半部分 -->
         <div class="form list-edit-form" v-show="isUpdate">
           <!-- 当用户点击标题进入修改状态，就显示当前内容可以修改 -->
@@ -118,7 +118,6 @@
             this.text= '';
             this.init();
 	    this.$store.dispatch('getTodo');
-            //请求成功后初始化
           });
         },
         updateTodo(){
