@@ -3,7 +3,7 @@
       <nav><!-- 容器上半部分 -->
         <div class="form list-edit-form" v-show="isUpdate">
           <!-- 当用户点击标题进入修改状态，就显示当前内容可以修改 -->
-          <input type="text" v-model="todo.title" @keyup.enter="updateTitle" :disabled="todo.locked"/>
+          <input type="text" v-model="todo.title" @keyup.enter="updateTitle" @blur="updateTitle" :disabled="todo.locked"/>
           <div class="nav-group right">
             <a class="nav-item" @click="isUpdate = false">
               <span class="icon-close"></span>
@@ -26,13 +26,13 @@
         </h1>
       <div class="nav-group right" v-show="!isUpdate">
         <div class="options-web">
-          <a class="nav-item"> <!-- 锁定图标 -->
+          <a class="nav-item" @click="onlock"> <!-- 锁定图标 -->
             <span class="icon-lock" v-if="todo.locked"></span>
             <span class="icon-unlock" v-else>
             </span>
           </a>
           <a class="nav-item"> <!-- 删除图标 -->
-            <span class="icon-trash"></span>
+            <span class="icon-trash" @click="onDelete"></span>
           </a>
         </div>
       </div>
@@ -46,8 +46,8 @@
       </div>
     </nav>
     <div class="content-scrollable list-items"><!-- 容器下半部分 -->
-      <div v-for="item in items">
-        <item :item="item"></item>
+      <div v-for="(item,index) in items">
+        <item :item="item" :index="index" :id="todo.id" :init="init" :locked="todo.locked"></item>
       </div>
       <!--<item></item>-->
         <!-- 这里`v-for`会循环我们在 `data`函数 事先定义好的 ’items‘模拟数据，
@@ -117,11 +117,12 @@
           addRecord({ id: ID,text: this.text}).then(res => {
             this.text= '';
             this.init();
+	    this.$store.dispatch('getTodo');
             //请求成功后初始化
           });
         },
         updateTodo(){
-          let _this = this;
+            let _this = this;
           editTodo({
             todo:this.todo
           }).then(data => {
@@ -131,6 +132,14 @@
         updateTitle(){
           this.updateTodo();
           this.isUpdate = false;
+        },
+        onlock(){
+          this.todo.locked = !this.todo.locked;
+          this.updateTodo();
+        },
+        onDelete(){
+          this.todo.isDelete = true;
+          this.updateTodo();
         }
       }
     }

@@ -7,9 +7,10 @@
     </section>
     <div class="content-overlay" @click="$store.dispatch('updateMenu')"></div>
     <!-- 这个是当页面收缩覆盖在内容上面的模糊层，点击后复原 他可以直接调用vuex actions.js里面的updateMenu方法-->
-    <section class="content-container"><!--右边的容器-->
+    <div class="content-container"><!--右边的容器-->
       <todo></todo>
-    </section>
+       <router-view></router-view>
+    </div>
   </section>
 </template>
 <script>
@@ -33,7 +34,7 @@
 
   //这里写js
 </script>
-<style lang="less" scoped>
+<style lang="less" >
   @import '../common/style/layouts.less';
   /* 这里写css */
 </style>
